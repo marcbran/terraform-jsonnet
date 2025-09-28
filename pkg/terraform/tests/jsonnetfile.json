@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "dependencies": [
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/marcbran/jsonnet.git",
+          "subdir": "terraform-provider-jsonnet"
+        }
+      },
+      "version": "terraform-provider/registry.terraform.io/marcbran/jsonnet"
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/marcbran/jsonnet.git",
+          "subdir": "terraform-provider-local"
+        }
+      },
+      "version": "terraform-provider/registry.terraform.io/hashicorp/local"
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/marcbran/jsonnet.git",
+          "subdir": "terraform-provider-time"
+        }
+      },
+      "version": "terraform-provider/registry.terraform.io/hashicorp/time"
+    }
+  ],
+  "legacyImports": true
+}

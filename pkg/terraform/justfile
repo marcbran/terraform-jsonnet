@@ -2,7 +2,7 @@
 test:
     @jpoet test
 
-build: test
+build: it
     @jpoet pkg build
 
 push: build

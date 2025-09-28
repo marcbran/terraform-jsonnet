@@ -2,7 +2,7 @@ local p = import 'pkg/main.libsonnet';
 
 p.pkg({
   source: 'https://github.com/marcbran/terraform/pkg/terraform',
-  repo: 'git@github.com:marcbran/jsonnet.git',
+  repo: 'https://github.com/marcbran/jsonnet.git',
   branch: 'terraform',
   path: 'terraform',
   target: 'tf',

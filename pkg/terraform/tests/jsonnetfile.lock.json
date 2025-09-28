@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "dependencies": [
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/marcbran/jsonnet.git",
+          "subdir": "terraform-provider-jsonnet"
+        }
+      },
+      "version": "cc1f89dde1e4f6c8443cad70f6dce590e2b8ad07",
+      "sum": "xBl7AOGC0tVbbi2UzqEDINltGdkHgTtOSp+jmcgwRY8="
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/marcbran/jsonnet.git",
+          "subdir": "terraform-provider-local"
+        }
+      },
+      "version": "8821e85c6275b847778a108500b5efabd18ea961",
+      "sum": "A0WGGUQtKw3NPM1gzIQSNOfVLURtrq4qSxoqerHhO9Y="
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/marcbran/jsonnet.git",
+          "subdir": "terraform-provider-time"
+        }
+      },
+      "version": "bd199dd26ed69ccc123f0a006139353bb64eb394",
+      "sum": "r9TQ7oD9DICKiSfxp5io+yePtEwhRZPrThWBWEmN1PU="
+    }
+  ],
+  "legacyImports": false
+}

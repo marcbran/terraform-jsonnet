@@ -1,6 +1,7 @@
 local tf = import './main.libsonnet';
 local jsonnet = import './tests/terraform-provider-jsonnet/main.libsonnet';
 local Local = import './tests/terraform-provider-local/main.libsonnet';
+local time = import './tests/vendor/terraform-provider-time/main.libsonnet';
 
 local cfg(blocks) = std.manifestJson(blocks);
 
@@ -9,6 +10,16 @@ local localCfg(blocks) = std.manifestJson([
     terraform: {
       required_providers: {
         'local': { source: 'registry.terraform.io/hashicorp/local', version: '2.5.2' },
+      },
+    },
+  },
+] + blocks);
+
+local timeCfg(blocks) = std.manifestJson([
+  {
+    terraform: {
+      required_providers: {
+        time: { source: 'registry.terraform.io/hashicorp/time', version: '0.13.1' },
       },
     },
   },
@@ -329,6 +340,41 @@ local moduleTests = {
           module: {
             example: {
               source: '../tests/example',
+            },
+          },
+        },
+      ]),
+    },
+  ],
+};
+
+local importTests = {
+  name: 'import',
+  tests: [
+    {
+      name: 'string',
+      it: false,
+      input::
+        local example = time.resource.static('example', {});
+        [
+          tf.Import('example', {
+            to: example,
+            id: '2006-01-02T15:04:05Z',
+          }),
+        ],
+      expected: timeCfg([
+        {
+          'import': {
+            id: '2006-01-02T15:04:05Z',
+            to: 'time_static.example',
+          },
+        },
+        {
+          resource: {
+            time_static: {
+              example: {
+
+              },
             },
           },
         },
@@ -1309,6 +1355,7 @@ local dataTests = {
     outputTests,
     localTests,
     moduleTests,
+    importTests,
     functionTests,
     ifTests,
     forTests,

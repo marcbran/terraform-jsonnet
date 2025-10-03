@@ -61,6 +61,14 @@ local build = {
 
 };
 
+local attribute(block, name, required=false) = if !required && !std.objectHas(block, name) then {} else {
+  [name]: build.template(block[name]),
+};
+
+local attributeExpression(block, name, required=false) = if !required && !std.objectHas(block, name) then {} else {
+  [name]: build.expression(block[name]),
+};
+
 local Format(string, values) = {
   _: {
     str: string % [build.template(value) for value in values],
@@ -74,15 +82,14 @@ local Variable(name, block) = {
     ref: 'var.%s' % [name],
     block: {
       variable: {
-        [name]: std.prune({
-          default: std.get(block, 'default', null),
+        [name]:
+          attribute(block, 'default') +
           // TODO type constraints
-          type: std.get(block, 'type', null),
-          description: std.get(block, 'description', null),
+          attribute(block, 'type') +
+          attribute(block, 'description') +
           // TODO validation
-          sensitive: std.get(block, 'sensitive', null),
-          nullable: std.get(block, 'nullable', null),
-        }),
+          attribute(block, 'sensitive') +
+          attribute(block, 'nullable'),
       },
     },
     blocks: {
@@ -96,14 +103,13 @@ local Output(name, block) = {
     local _ = self,
     block: {
       output: {
-        [name]: std.prune({
-          value: build.template(std.get(block, 'value', null)),
-          description: std.get(block, 'description', null),
+        [name]:
+          attribute(block, 'value') +
+          attribute(block, 'description') +
           // TODO precondition
-          sensitive: std.get(block, 'sensitive', null),
-          nullable: std.get(block, 'nullable', null),
-          depends_on: std.get(block, 'depends_on', null),
-        }),
+          attribute(block, 'sensitive') +
+          attribute(block, 'nullable') +
+          attribute(block, 'depends_on'),
       },
     },
     blocks: build.blocks(block) + {
@@ -139,6 +145,53 @@ local Module(name, block) = {
     },
     blocks: build.blocks(block) + {
       [_.ref]: _.block,
+    },
+  },
+};
+
+local Import(name, block) = {
+  _: {
+    local _ = self,
+    block: {
+      'import':
+        attributeExpression(block, 'to') +
+        attribute(block, 'id') +
+        attribute(block, 'identity') +
+        attribute(block, 'for_each') +
+        attribute(block, 'provider'),
+    },
+    blocks: build.blocks(block) + {
+      ['import.%s' % [name]]: _.block,
+    },
+  },
+};
+
+local Moved(name, block) = {
+  _: {
+    local _ = self,
+    block: {
+      moved:
+        attributeExpression(block, 'from') +
+        attributeExpression(block, 'to'),
+    },
+    blocks: build.blocks(block) + {
+      ['moved.%s' % [name]]: _.block,
+    },
+  },
+};
+
+local Removed(name, block) = {
+  _: {
+    local _ = self,
+    block: {
+      removed:
+        attributeExpression(block, 'from'),
+      // TODO lifecycle
+      // TODO connection
+      // TODO provisioner
+    },
+    blocks: build.blocks(block) + {
+      ['removed.%s' % [name]]: _.block,
     },
   },
 };
@@ -411,6 +464,9 @@ local terraform = functions + operators + {
   Local: Local,
   Output: Output,
   Module: Module,
+  Import: Import,
+  Moved: Moved,
+  Removed: Removed,
   Cfg: Cfg,
   CfgDir: CfgDir,
   Each: Each,

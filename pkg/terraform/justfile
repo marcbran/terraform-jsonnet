@@ -45,7 +45,7 @@ it:
 
       rm -rf tf
 
-    done < <(jsonnet-kit test --json | jq -rc '.results | .[]')
+    done < <(jpoet test --json | jq -rc '.results | .[]')
 
     echo "Passed: ${passed}/${total}"
     exit "${exit_code}"
